@@ -31,3 +31,5 @@ export class Shop extends Component {
         </div>
     }
 }
+
+
