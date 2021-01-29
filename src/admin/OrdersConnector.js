@@ -1,12 +1,13 @@
 import { graphql, compose } from "react-apollo";
 import { ordersSummaryQuery } from "./clientQueries";
 import { OrdersTable } from "./OrdersTable";
+import { shipOrder } from "./clientMutations";
 
 const vars = {
     onlyShipped: false, page: 1, pageSize: 10, sort: "id"
 }
 
-export const OrdersConnector = 
+export const OrdersConnector = compose(
     graphql(ordersSummaryQuery,
         {
             options: (props) => ({ variables: vars }),
@@ -22,4 +23,10 @@ export const OrdersConnector =
                 setSortProperty: (key) => { vars.sort = key; refetch(vars) },
             })
         }
+    ),
+    graphql(shipOrder, {
+        props: ({ mutate }) => ({
+            toggleShipped: (id, shipped) => mutate({ variables: { id, shipped } })
+        })
+    })
 )(OrdersTable);
